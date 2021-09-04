@@ -30,8 +30,6 @@ def load_data(directory):
                 names[row["name"].lower()] = {row["id"]}
             else:
                 names[row["name"].lower()].add(row["id"])
-
-    print(people);
                 
     # Load movies
     with open(f"{directory}/movies.csv", encoding="utf-8") as f:
@@ -107,8 +105,7 @@ def shortest_path(source, target):
 
     queue_neighbors(queueFrontier, sourceNeighbors, None);
 
-    targetNode = find_shortest_path_2(target, referencesChecked, queueFrontier);
-    print("Found targetNode = ", targetNode);
+    targetNode = find_shortest_path(target, referencesChecked, queueFrontier);
     if(targetNode is None):
         return None;
 
@@ -125,54 +122,18 @@ def shortest_path(source, target):
 
     print ("final path = ", pathtotarget);
 
-    return pathtotarget; 
-
-def find_shortest_path(originalsource, source, target, referencesChecked) :
-    print("Finding neighbors for : ", source);
-    sourceNeighbors = neighbors_for_person(source);
-    if sourceNeighbors is None:
-        return None;
-
-    print( "OrgSource = ", originalsource, " Source = ", source, " Target = ", target);
-    print("Target : ", people[target])   
-    print("Neighbours for Source [", people[source]["name"], "] = ",neighbors_for_person(source));
-
-    pathtotarget = list();
-        
-    for neighbor in sourceNeighbors :
-        print("looking at : ", neighbor[1]);
-
-        if (neighbor[1] == target):
-            # Found a connection
-            pathtotarget.append(neighbor);
-
-    if len(pathtotarget) == 0 :
-        for neighbor in sourceNeighbors :
-            print("looking into : ", neighbor[1]);
-            try: 
-                referencesChecked.index(neighbor[1]);
-            except:
-                referencesChecked.append(neighbor[1]);
-                pathfound = find_shortest_path(originalsource, neighbor[1], target, referencesChecked);
-                if( len(pathfound) != 0) :
-                    pathtotarget.append(neighbor);
-                    pathtotarget.extend(pathfound);
-                    break;
-                    
-    print ("Path = ", pathtotarget);
     return pathtotarget;
 
-def find_shortest_path_2(target, referencesChecked, queueFrontier):
+def find_shortest_path(target, referencesChecked, queueFrontier):
     #get items from queue
-
     while(queueFrontier.empty() == False):
         currentNode = queueFrontier.remove();
         currentNeighbor = currentNode.state;
+
+        #skip if we have referenced this person before
         try: 
             referencesChecked.index(currentNeighbor[1]);
         except:
-            print("checking neighbor ", currentNeighbor[1]);
-
             if( currentNeighbor[1] == target):
                 #Found the connection, return the currentNode so we can trace the heirarchy to calculate the path.
                 return currentNode;
