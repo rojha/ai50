@@ -92,15 +92,18 @@ def shortest_path(source, target):
     If no possible path, returns None.
     """
 
-    # TODO
-    #raise NotImplementedError
     referencesChecked = list();
 
     #Using queue for breadth first search to find optimal solution    
     queueFrontier = QueueFrontier();
 
     sourceNeighbors = neighbors_for_person(source);
-    if sourceNeighbors is None:
+    if sourceNeighbors is None or len(sourceNeighbors) == 0:
+        return None;
+
+    # If the target has no neighbors then there would be no path to it. 
+    targetNeighors = neighbors_for_person(target);
+    if( targetNeighors is None or len(targetNeighors) == 0):
         return None;
 
     queue_neighbors(queueFrontier, sourceNeighbors, None);
@@ -120,13 +123,13 @@ def shortest_path(source, target):
 
     pathtotarget.reverse();
 
-    print ("final path = ", pathtotarget);
-
     return pathtotarget;
 
 def find_shortest_path(target, referencesChecked, queueFrontier):
     #get items from queue
     while(queueFrontier.empty() == False):
+        #print ("Queue length = ", queueFrontier.len());
+
         currentNode = queueFrontier.remove();
         currentNeighbor = currentNode.state;
 
